@@ -15,40 +15,35 @@ export class ProductsService {
     return this.productRepo.find();
   }
 
-  findOne(id: number) {
-    const product = this.productRepo.findOne(id);
+  async findOne(id: number) {
+    const product = await this.productRepo.findOne(id);
     if (!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }
     return product;
   }
 
-  // create(data: CreateProductDto) {
-  //   this.counterId = this.counterId + 1;
-  //   const newProduct = {
-  //     id: this.counterId,
-  //     ...data,
-  //   };
-  //   this.products.push(newProduct);
-  //   return newProduct;
-  // }
+  create(data: CreateProductDto) {
+    // creando asignando uno a uno las propiedades
+    // const newProduct = new Product();
+    // newProduct.name = data.name;
+    // newProduct.description = data.image;
+    // newProduct.price = data.price;
+    // newProduct.stock = data.stock;
+    // newProduct.image = data.image;
 
-  // update(id: number, changes: UpdateProductDto) {
-  //   const product = this.findOne(id);
-  //   const index = this.products.findIndex((item) => item.id === id);
-  //   this.products[index] = {
-  //     ...product,
-  //     ...changes,
-  //   };
-  //   return this.products[index];
-  // }
+    // creando en base al DTO
+    const newProduct = this.productRepo.create(data);
+    return this.productRepo.save(newProduct);
+  }
 
-  // remove(id: number) {
-  //   const index = this.products.findIndex((item) => item.id === id);
-  //   if (index === -1) {
-  //     throw new NotFoundException(`Product #${id} not found`);
-  //   }
-  //   this.products.splice(index, 1);
-  //   return true;
-  // }
+  async update(id: number, changes: UpdateProductDto) {
+    const product = await this.productRepo.findOne(id);
+    this.productRepo.merge(product, changes);
+    return this.productRepo.save(product);
+  }
+
+  remove(id: number) {
+    return this.productRepo.delete(id);
+  }
 }
