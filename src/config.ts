@@ -13,6 +13,13 @@ export default registerAs('config', () => {
       user: process.env.POSTGRES_USER,
       host: process.env.POSTGRES_HOST,
     },
+    sqlserver: {
+      dbName: process.env.SQLSERVER_DATABASE,
+      port: parseInt(process.env.SQLSERVER_PORT),
+      password: process.env.SQLSERVER_SA_PASSWORD,
+      user: process.env.SQLSERVER_USER,
+      host: process.env.SQLSERVER_HOST,
+    },
     apiKey: process.env.API_KEY,
   };
   return variables;
