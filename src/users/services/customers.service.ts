@@ -36,7 +36,7 @@ export class CustomersService {
 
   async remove(id: number) {
     const customer = await this.customerRepo.findOne(id);
-    console.log(customer);
+    //console.log(customer);
     if (!customer) {
       throw new NotFoundException(`Customer #${id} not found`);
     }

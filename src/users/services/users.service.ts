@@ -19,33 +19,33 @@ export class UsersService {
     private configService: ConfigService,
   ) {}
 
-  private counterId = 1;
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'correo@mail.com',
-      password: '12345',
-      role: 'admin',
-    },
-  ];
+  // private counterId = 1;
+  // private users: User[] = [
+  //   {
+  //     id: 1,
+  //     email: 'correo@mail.com',
+  //     password: '12345',
+  //     role: 'admin',
+  //   },
+  // ];
 
-  findAll() {
+  async findAll() {
     // const apiKey = this.configService.get('API_KEY');
     // const dbName = this.configService.get('DATABASE_NAME');
     // console.log(apiKey, dbName);
-    return this.userRepo.find();
+    return await this.userRepo.find();
   }
 
-  findOne(id: number) {
-    const user = this.userRepo.findOne(id);
+  async findOne(id: number) {
+    const user = await this.userRepo.findOne(id);
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
     }
     return user;
   }
 
-  create(data: CreateUserDto) {
-    const newUser = this.userRepo.create(data);
+  async create(data: CreateUserDto) {
+    const newUser = await this.userRepo.create(data);
     return this.userRepo.save(newUser);
   }
 
@@ -55,18 +55,18 @@ export class UsersService {
     return this.userRepo.save(user);
   }
 
-  remove(id: number) {
-    return this.userRepo.delete(id);
+  async remove(id: number) {
+    return await this.userRepo.delete(id);
   }
 
-  async getOrderByUser(id: number) {
-    const user = this.findOne(id);
-    return {
-      date: new Date(),
-      user,
-      products: await this.productsService.findAll(),
-    };
-  }
+  // async getOrderByUser(id: number) {
+  //   const user = this.findOne(id);
+  //   return {
+  //     date: new Date(),
+  //     user,
+  //     products: await this.productsService.findAll(),
+  //   };
+  // }
 
   getTasks() {
     return new Promise((resolve, reject) => {
