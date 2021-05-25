@@ -9,8 +9,8 @@ import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dtos';
 export class BrandsService {
   constructor(@InjectRepository(Brand) private brandRepo: Repository<Brand>) {}
 
-  findAll() {
-    return this.brandRepo.find();
+  async findAll() {
+    return await this.brandRepo.find();
   }
 
   async findOne(id: number) {
@@ -21,8 +21,8 @@ export class BrandsService {
     return brand;
   }
 
-  create(data: CreateBrandDto) {
-    const newBrand = this.brandRepo.create(data);
+  async create(data: CreateBrandDto) {
+    const newBrand = await this.brandRepo.create(data);
     return this.brandRepo.save(newBrand);
   }
 
@@ -32,7 +32,11 @@ export class BrandsService {
     return this.brandRepo.save(brand);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const brand = await this.brandRepo.findOne(id);
+    if (!brand) {
+      throw new NotFoundException(`Brand #${id} not found`);
+    }
     return this.brandRepo.delete(id);
   }
 }
