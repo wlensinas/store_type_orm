@@ -5,14 +5,18 @@ import { Repository } from 'typeorm';
 import { Product } from './../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './../dtos/products.dtos';
 
+import { BrandsService } from './brands.service';
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
+    private brandService: BrandsService,
   ) {}
 
   findAll() {
-    return this.productRepo.find();
+    return this.productRepo.find({
+      relations: ['brand'],
+    });
   }
 
   async findOne(id: number) {
@@ -23,7 +27,7 @@ export class ProductsService {
     return product;
   }
 
-  create(data: CreateProductDto) {
+  async create(data: CreateProductDto) {
     // creando asignando uno a uno las propiedades
     // const newProduct = new Product();
     // newProduct.name = data.name;
@@ -33,12 +37,20 @@ export class ProductsService {
     // newProduct.image = data.image;
 
     // creando en base al DTO
-    const newProduct = this.productRepo.create(data);
+    const newProduct = await this.productRepo.create(data);
+    if (data.brandId) {
+      const brand = await this.brandService.findOne(data.brandId);
+      newProduct.brand = brand;
+    }
     return this.productRepo.save(newProduct);
   }
 
   async update(id: number, changes: UpdateProductDto) {
     const product = await this.productRepo.findOne(id);
+    if (changes.brandId) {
+      const brand = await this.brandService.findOne(changes.brandId);
+      product.brand = brand;
+    }
     this.productRepo.merge(product, changes);
     return this.productRepo.save(product);
   }
