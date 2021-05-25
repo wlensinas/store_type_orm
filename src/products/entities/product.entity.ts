@@ -4,7 +4,10 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+
+import { Brand } from './brand.entity';
 
 @Entity()
 export class Product {
@@ -25,6 +28,10 @@ export class Product {
 
   @Column({ type: 'varchar' })
   image: string;
+
+  //ManyToOne, agrega la FK en la entidad
+  @ManyToOne(() => Brand, (brand) => brand.products)
+  brand: Brand;
 
   @CreateDateColumn({
     type: 'timestamptz',
